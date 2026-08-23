@@ -43,7 +43,10 @@ if __name__ == "__main__":
 THRESHOLD = 5
 WINDOW_SECONDS = 60
 
-def detect_attacks(logs):
+DEFAULT_THRESHOLD = 5
+DEFAULT_WINDOW_SECONDS = 60
+
+def detect_attacks(logs, threshold=DEFAULT_THRESHOLD, window_seconds=DEFAULT_WINDOW_SECONDS):
     grouped = group_failed_by_ip(logs)
     flagged = {}
 
@@ -55,19 +58,17 @@ def detect_attacks(logs):
             t = parse_time(entry["timestamp"])
             window.append(entry)
 
-            # Drop entries that fell outside the 60-second window
-            while (t - parse_time(window[0]["timestamp"])).total_seconds() > WINDOW_SECONDS:
+            while (t - parse_time(window[0]["timestamp"])).total_seconds() > window_seconds:
                 window.popleft()
 
-            # If we've hit the threshold, flag this IP
-            if len(window) >= THRESHOLD:
+            if len(window) >= threshold:
                 flagged[ip] = {
                     "attempt_count": len(window),
                     "first_attempt": window[0]["timestamp"],
                     "last_attempt": window[-1]["timestamp"],
                     "usernames": list({e["username"] for e in window}),
                 }
-                break  # no need to keep checking this IP once flagged
+                break
 
     return flagged
 
