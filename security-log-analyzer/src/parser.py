@@ -11,10 +11,10 @@ pattern = re.compile(
     r"port \d+ ssh2"
 )
 
-def parse_logs():
+def parse_logs(filepath="sample_logs/auth.log"):
     parsed_logs = []
 
-    with open("sample_logs/auth.log", "r") as file:
+    with open(filepath, "r") as file:
         for line in file:
             line = line.strip()
 
