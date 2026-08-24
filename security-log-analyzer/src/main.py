@@ -2,9 +2,14 @@ import argparse
 from detector import detect_attacks
 from report import print_report, export_json, export_csv
 
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_LOG_PATH = os.path.join(BASE_DIR, "sample_logs", "auth.log")
+
 def main():
     parser = argparse.ArgumentParser(description="SSH Brute-Force Log Analyzer")
-    parser.add_argument("--file", default="sample_logs/auth.log", help="Path to log file")
+    parser.add_argument("--file", default=DEFAULT_LOG_PATH, help="Path to log file")
     parser.add_argument("--threshold", type=int, default=5, help="Failed attempts to trigger a flag")
     parser.add_argument("--window", type=int, default=60, help="Time window in seconds")
     parser.add_argument("--export", choices=["csv", "json"], help="Export format")
