@@ -672,14 +672,14 @@ class LogAnalyzerApp(ctk.CTk):
             )
 
         else:
-
-            for ip, info in self.results.items():
-
-                self.make_alert_card(
-                    ip,
-                    info,
-                    threshold
-                )
+            sorted_results = sorted(
+                self.results.items(),
+                key=lambda item: item[1]["attempt_count"],
+                reverse=True
+        )
+        for ip, info in sorted_results:
+            self.make_alert_card(ip, info, threshold)
+        
 
 
         self.status_bar.configure(
