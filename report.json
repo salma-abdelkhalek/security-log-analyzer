@@ -1,0 +1,22 @@
+{
+  "192.168.1.50": {
+    "attempt_count": 5,
+    "first_attempt": "2026-08-20 19:04:15",
+    "last_attempt": "2026-08-20 19:04:27",
+    "usernames": [
+      "sara",
+      "test",
+      "mohamed"
+    ]
+  },
+  "10.0.0.99": {
+    "attempt_count": 5,
+    "first_attempt": "2026-08-20 19:09:07",
+    "last_attempt": "2026-08-20 19:09:19",
+    "usernames": [
+      "sara",
+      "admin",
+      "root"
+    ]
+  }
+}

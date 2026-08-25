@@ -49,8 +49,8 @@ def detect_attacks(
 
             if len(window) >= threshold:
                 attack_detected = True
-
                 attack_attempts = list(window)
+                
 
         if attack_detected:
 

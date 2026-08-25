@@ -395,163 +395,56 @@ class LogAnalyzerApp(ctk.CTk):
 
         return value_label
 
-
-    def make_alert_card(
-        self,
-        ip,
-        info,
-        threshold
-    ):
-
+    def make_alert_card(self, ip, info, threshold):
         count = info["attempt_count"]
 
-        # Determine severity
-
         if count >= threshold * 3:
-
-            severity = "CRITICAL"
-            color = "#e53935"
-            icon = "🔴"
-
+            severity, color, icon = "CRITICAL", "#e53935", "🔴"
         elif count >= threshold * 1.5:
-
-            severity = "HIGH"
-            color = "#fb8c00"
-            icon = "🟠"
-
+            severity, color, icon = "HIGH", "#fb8c00", "🟠"
         else:
+            severity, color, icon = "MEDIUM", "#fdd835", "🟡"
 
-            severity = "MEDIUM"
-            color = "#fdd835"
-            icon = "🟡"
+        card = ctk.CTkFrame(self.alerts_frame, corner_radius=8, border_width=2, border_color=color, height=90)
+        card.pack(fill="x", pady=3, padx=4)   # was pady=6 — smaller gap between cards
+        card.pack_propagate(False)
 
+        strip = ctk.CTkFrame(card, width=5, fg_color=color, corner_radius=0)
+        strip.pack(side="left", fill="y")
 
-        card = ctk.CTkFrame(
-            self.alerts_frame,
-            corner_radius=10,
-            border_width=2,
-            border_color=color
-        )
+        content = ctk.CTkFrame(card, fg_color="transparent")
+        content.pack(side="left", fill="both", expand=True, padx=12, pady=6, anchor="n")   # was pady=10
 
-        card.pack(
-            fill="x",
-            pady=6,
-            padx=4
-        )
+        top_row = ctk.CTkFrame(content, fg_color="transparent")
+        top_row.pack(fill="x")
 
+        badge = ctk.CTkLabel(top_row, text=f"{icon} {severity}", text_color=color,
+                          font=("Segoe UI", 12, "bold"))   # was 11
+        badge.pack(side="left")
 
-        # Colored strip
+        type_label = ctk.CTkLabel(top_row, text="  BRUTE_FORCE", text_color="#9e9e9e",
+                               font=("Segoe UI", 10))
+        type_label.pack(side="left")
 
-        strip = ctk.CTkFrame(
-            card,
-            width=6,
-            fg_color=color,
-            corner_radius=0
-        )
-
-        strip.pack(
-            side="left",
-            fill="y"
-        )
-
-
-        content = ctk.CTkFrame(
-            card,
-            fg_color="transparent"
-        )
-
-        content.pack(
-            side="left",
-            fill="both",
-            expand=True,
-            padx=15,
-            pady=10
-        )
-
-
-        # Top row
-
-        top_row = ctk.CTkFrame(
-            content,
-            fg_color="transparent"
-        )
-
-        top_row.pack(
-            fill="x"
-        )
-
-        badge = ctk.CTkLabel(
-            top_row,
-            text=f"{icon} {severity}",
-            text_color=color,
-            font=("Segoe UI", 11, "bold")
-        )
-
-        badge.pack(
-            side="left"
-        )
-
-        type_label = ctk.CTkLabel(
-            top_row,
-            text="  BRUTE_FORCE",
-            text_color="#9e9e9e",
-            font=("Segoe UI", 11)
-        )
-
-        type_label.pack(
-            side="left"
-        )
-
-        time_label = ctk.CTkLabel(
-            top_row,
-            text=info["last_attempt"],
-            text_color="#757575",
-            font=("Segoe UI", 10)
-        )
-
-        time_label.pack(
-            side="right"
-        )
-
-
-        # Headline
+        time_label = ctk.CTkLabel(top_row, text=info["last_attempt"], text_color="#757575",
+                               font=("Segoe UI", 9))
+        time_label.pack(side="right")
 
         headline = ctk.CTkLabel(
             content,
-            text=(
-                f"Brute-force attack: "
-                f"{count} failed login attempts detected"
-            ),
-            font=("Segoe UI", 13, "bold"),
-            anchor="w",
-            justify="left"
+            text=f"Brute-force attack: {count} failed login attempts detected",
+            font=("Segoe UI", 13, "bold"),   # was 13
+            anchor="w", justify="left"
         )
-
-        headline.pack(
-            fill="x",
-            pady=(4, 2)
-        )
-
-
-        # Detail row
+        headline.pack(fill="x", pady=(2, 1))   # was (4, 2)
 
         detail = ctk.CTkLabel(
             content,
-            text=(
-                f"📍 IP: {ip}    "
-                f"👤 Targets: {', '.join(info['usernames'])}    "
-                f"🕒 First seen: {info['first_attempt']}"
-            ),
-            font=("Segoe UI", 11),
-            text_color="#b0b0b0",
-            anchor="w",
-            justify="left"
+            text=f"📍 {ip}    👤 {', '.join(info['usernames'])}    🕒 {info['first_attempt']}",
+            font=("Segoe UI", 11), text_color="#b0b0b0",
+            anchor="w", justify="left"
         )
-
-        detail.pack(
-            fill="x"
-        )
-
+        detail.pack(fill="x")  
 
     def browse_file(self):
 
